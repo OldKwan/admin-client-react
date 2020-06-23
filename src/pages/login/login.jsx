@@ -1,8 +1,15 @@
 import React, { Component } from 'react'
-import { Form, Input, Button, Checkbox } from 'antd'
+import { Form, Input, Button, Checkbox, message } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
+import CONFIG from '@/config'
 import logo from '@/assets/images/logo.png'
+import {
+    post_login,
+} from '@/api'
+import { replace } from '@/services/history'
+import storage from '@/storage'
+
 
 import './login.less'
 
@@ -15,14 +22,32 @@ class login extends Component {
     }
 
     onFinish = values => {
-        console.log('Success:', values);
+        this.loadLogin({...values})
     };
 
-    onFinishFailed = errorInfo => {
-        console.log('Failed:', errorInfo);
-    };
+    loadLogin = async ({username, password}) => {
+        try {
+            const {data} = await post_login({
+                username,
+                password,
+            })
+            if (data.data && data.status === CONFIG.SUCCESS_CODE) {
+                message.success('登录成功!')
+                storage.saveUser(data.data)
+                replace('/')
+            }
+        } finally {
+
+        }
+        
+    }
 
     render() {
+        const user = storage.getUser()
+        if (user && user._id) {
+            replace('/')
+            return null
+        }
         return (
             <div className="login">
                 <header className="login-header">
@@ -34,7 +59,6 @@ class login extends Component {
                     <Form
                         name="normal_login"
                         className="login-form"
-                        initialValues={{ remember: true }}
                         onFinish={this.onFinish}
                     >
                         <Form.Item
@@ -46,7 +70,7 @@ class login extends Component {
                                 { pattern: /^[a-zA-Z0-9]+$/, message: '用户名不可含非法符号' },
                             ]}
                         >
-                            <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="用户名" />
+                            <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="username" />
                         </Form.Item>
                         <Form.Item
                             name="password"
@@ -60,7 +84,7 @@ class login extends Component {
                             <Input
                                 prefix={<LockOutlined className="site-form-item-icon" />}
                                 type="password"
-                                placeholder="密码"
+                                placeholder="password"
                             />
                         </Form.Item>
                         <Form.Item>
@@ -75,7 +99,7 @@ class login extends Component {
 
                         <Form.Item>
                             <Button type="primary" htmlType="submit" className="login-form-button">
-                                登录
+                                log in
                             </Button>
                         </Form.Item>
                     </Form>
