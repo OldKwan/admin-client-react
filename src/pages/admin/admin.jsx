@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import { Layout } from 'antd'
-import { Switch, Route } from 'react-router-dom'
+import { Switch, Route, Redirect } from 'react-router-dom'
 
 import storage from '@/storage'
-import { replace } from '@/services/history'
 import LeftNav from '@/components/LeftNav/LeftNav'
 import Header from '@/components/Header/Header'
+import history from '@/services/history/history'
 
 import Home from '@/pages/home/home'
 import Category from '@/pages/category/category'
@@ -27,8 +27,7 @@ class admin extends Component {
     render() {
         const user = storage.getUser()
         if (!user || !user._id) {
-            replace('/login')
-            return null
+            return <Redirect to="/login" />
         }
         return (
             <Layout style={{ height: '100%' }}>
@@ -39,13 +38,13 @@ class admin extends Component {
                     <Header />
                     <Content style={{backgroundColor: 'white'}}>
                         <Switch>
-                            <Route path="/" component={Home} exact />
                             <Route path="/home" component={Home} />
                             <Route path="/category" component={Category} />
                             <Route path="/product" component={Product} />
                             <Route path="/user" component={User} />
                             <Route path="/role" component={Role} />
                             <Route path="/charts" component={Charts} />
+                            <Redirect to="/home" />
                         </Switch>
                     </Content>
                     <Footer style={{ textAlign: 'center', color: '#aaaaaa' }}>推荐使用谷歌浏览器，可以获得更佳页面操作体验</Footer>

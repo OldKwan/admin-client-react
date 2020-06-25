@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Menu } from 'antd';
 import { Link } from 'react-router-dom'
-import AntdIcon from '@ant-design/icons-react';
+import { ApartmentOutlined } from '@ant-design/icons'
 
 import logo from '@/assets/images/logo.png'
 import {
@@ -12,58 +12,79 @@ import './LeftNav.less'
 
 const { SubMenu } = Menu;
 
-class LeftNav extends Component {
-    render() {
-        return (
-            <div className="left-nav">
-                <Link to="/" className="left-nav-header">
-                    <img src={logo} alt="" />
-                    <h1>硅谷后台</h1>
-                </Link>
-                <Menu
-                    defaultSelectedKeys={['1']}
-                    defaultOpenKeys={['sub1']}
-                    mode="inline"
-                    theme="dark"
-                >
+
+/* 
+根据 treeNodes的数据数组生成对应的 标签数组
+使用 map() 和递归
+ */
+function getMenuNodes(treeNodes) {
+    return treeNodes.map(item => {
+        if (!item.children) {
+            return (
+                <Menu.Item key={item.key} icon={item.icon}>
+                    <Link to={item.key}>
+                        {item.title}
+                    </Link>
+                </Menu.Item>
+            )
+        } else {
+            return (
+                <SubMenu key={item.key} icon={item.icon} title={item.title} >
                     {
-                        menuList.map(item => {
-                            if (item.children && item.children.length) {
-                                return (
-                                    <SubMenu key={item.key} title={
-                                        <span>
-                                            <AntdIcon type={item.icon} />
-                                            {item.title}
-                                        </span>
-                                    }>
-                                        {
-                                            item.children.map(item2 => (
-                                                <Menu.Item key={item2.key}>
-                                                    <Link to={item2.key}>
-                                                        <AntdIcon type={item2.icon} />
-                                                        {item2.title}
-                                                    </Link>
-                                                </Menu.Item>
-                                            ))
-                                        }
-                                    </SubMenu>
-                                )
-                            } else {
-                                return (
-                                    <Menu.Item key={item.key}>
-                                        <Link to={item.key}>
-                                            <AntdIcon type={item.icon} />
-                                            {item.title}
-                                        </Link>
-                                    </Menu.Item>
-                                )
-                            }
-                        })
+                        getMenuNodes(item.children)
                     }
-                </Menu>
-            </div>
-        );
-    }
+                </SubMenu>
+            )
+        }
+    })
+}
+
+/* 
+根据 treeNodes的数据数组生成对应的 标签数组
+使用 reduce() 和递归
+ */
+function getMenuNodes2(treeNodes) {
+    return treeNodes.reduce((pre, item) => {
+        if (!item.children) {
+            pre.push((
+                <Menu.Item key={item.key} icon={item.icon}>
+                    <Link to={item.key}>
+                        {item.title}
+                    </Link>
+                </Menu.Item>
+            ))
+        } else {
+            pre.push((
+                <SubMenu key={item.key} icon={item.icon} title={item.title} >
+                    {
+                        getMenuNodes2(item.children)
+                    }
+                </SubMenu>
+            ))
+        }
+        return pre
+    }, [])
+}
+
+function LeftNav(props) {
+    const key = window.location.pathname
+    return (
+        <div className="left-nav">
+            <Link to="/" className="left-nav-header">
+                <img src={logo} alt="" />
+                <h1>硅谷后台</h1>
+            </Link>
+            <Menu
+                selectedKeys={[key]}
+                mode="inline"
+                theme="dark"
+            >
+                {
+                    getMenuNodes(menuList)
+                }
+            </Menu>
+        </div>
+    );
 }
 
 export default LeftNav

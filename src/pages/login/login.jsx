@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import { Form, Input, Button, Checkbox, message } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { Redirect } from 'react-router-dom'
 
 import CONFIG from '@/config'
 import logo from '@/assets/images/logo.png'
 import {
     post_login,
 } from '@/api'
-import { replace } from '@/services/history'
 import storage from '@/storage'
 
 
@@ -34,7 +34,7 @@ class login extends Component {
             if (data.data && data.status === CONFIG.SUCCESS_CODE) {
                 message.success('登录成功!')
                 storage.saveUser(data.data)
-                replace('/')
+                this.props.history.replace('/')
             }
         } finally {
 
@@ -45,8 +45,7 @@ class login extends Component {
     render() {
         const user = storage.getUser()
         if (user && user._id) {
-            replace('/')
-            return null
+            return <Redirect to="/" />
         }
         return (
             <div className="login">

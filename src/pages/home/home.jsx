@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Button } from 'antd'
 
 import './home.less'
 
@@ -7,6 +8,7 @@ class home extends Component {
         return (
             <div>
                 home
+                <Button type="primary">按钮</Button>
             </div>
         );
     }
