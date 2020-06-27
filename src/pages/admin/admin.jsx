@@ -36,7 +36,7 @@ class admin extends Component {
                 </Sider>
                 <Layout>
                     <Header />
-                    <Content style={{backgroundColor: 'white'}}>
+                    <Content style={{margin: '20px', backgroundColor: 'white'}}>
                         <Switch>
                             <Route path="/home" component={Home} />
                             <Route path="/category" component={Category} />
