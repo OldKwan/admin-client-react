@@ -13,7 +13,6 @@ import NotFound from '@/pages/NotFound/NotFound'
 // import history from './services/history/history'
 
 function App() {
-  console.log(window.location.pathname)
   return (
     // <BrowserRouter history={history}>
     <BrowserRouter>

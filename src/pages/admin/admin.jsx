@@ -27,7 +27,7 @@ class admin extends Component {
     render() {
         const user = storage.getUser()
         if (!user || !user._id) {
-            return <Redirect to="/login" />
+            // return <Redirect to="/login" />
         }
         return (
             <Layout style={{ height: '100%' }}>
