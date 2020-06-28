@@ -35,7 +35,7 @@ class admin extends Component {
                     <LeftNav/>
                 </Sider>
                 <Layout>
-                    <Header />
+                    <Header {...this.props}/>
                     <Content style={{margin: '20px', backgroundColor: 'white'}}>
                         <Switch>
                             <Route path="/home" component={Home} />

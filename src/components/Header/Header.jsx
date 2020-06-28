@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import {Modal} from 'antd'
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 import {
     jsonp_weather,
@@ -7,6 +9,9 @@ import {
     formateDate,
 } from '@/utils/utils'
 import storage from '@/storage'
+import {
+    menuList,
+} from '@/config/menuConfig.js'
 
 import './Header.less'
 
@@ -19,6 +24,8 @@ class Header extends Component {
             currentData: formateDate(new Date().getTime()),
             username: storage.getUser().username,
         }
+        this.title = ''
+        this.timeId = null
     }
 
     componentDidMount() {
@@ -26,8 +33,12 @@ class Header extends Component {
         this.loadJsonpWeather()
     }
 
+    componentWillUnmount() {
+        clearInterval(this.timeId)
+    }
+
     caculaTime = () => {
-        setInterval(() => {
+        this.timeId = setInterval(() => {
             const currentData = formateDate(new Date().getTime())
             this.setState({
                 currentData,
@@ -47,6 +58,30 @@ class Header extends Component {
         })
     }
 
+    getTitle = (arr) => {
+        const path = window.location.pathname
+        arr.forEach(item => {
+            if (!item.children) {
+                item.key === path && (this.title = item.title)
+            } else {
+                this.getTitle(item.children)
+            }
+        })
+    }
+
+    handleLogout = () => {
+        const that = this
+        Modal.confirm({
+            title: '登出',
+            icon: <ExclamationCircleOutlined />,
+            content: '是否确认登出?',
+            onOk() {
+                storage.removeUser()
+                that.props.history.replace('/login')
+            },
+          });
+    }
+    
     render() {
         const {
             dayPictureUrl,
@@ -54,14 +89,15 @@ class Header extends Component {
             currentData,
             username,
         } = this.state
+        this.getTitle(menuList)
         return (
             <div className="header">
                 <div className="header-top">
                     <span>欢迎, {username}</span>
-                    <a href="#">退出</a>
+                    <a href="#" onClick={this.handleLogout}>退出</a>
                 </div>
                 <div className="header-bottom">
-                    <div className="header-bottom-left">首页</div>
+                    <div className="header-bottom-left">{this.title}</div>
                     <div className="header-bottom-right">
                         <span>{currentData}</span>
                         <img src={dayPictureUrl} alt="" />

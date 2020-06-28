@@ -2,10 +2,12 @@ import jsonp from 'jsonp'
 import {message} from 'antd'
 import request from './setUp'
 
+// 登录
 export const post_login = (data) => (
     request.post('/login', data)
 )
 
+// 获取天气信息
 export const jsonp_weather = (city) => {
     return new Promise((resolve, reject) => {
         const url = `http://api.map.baidu.com/telematics/v3/weather?location=${city}&output=json&ak=3p49MVra6urFRGOT9s8UBWr2`
@@ -20,3 +22,16 @@ export const jsonp_weather = (city) => {
         })
     })
 }
+
+// 分类
+export const get_categoryList = (data) => (
+    request.get(`/manage/category/list?parentId=${data.parentId}`)
+)
+
+export const post_addCategory = (data) => (
+    request.post('/manage/category/add', data)
+)
+
+export const post_editCategory = (data) => (
+    request.post('/manage/category/update', data)
+)

@@ -1,7 +1,6 @@
 import React, { useEffect, Component } from 'react'
 import { Menu } from 'antd';
 import { Link } from 'react-router-dom'
-import { ApartmentOutlined } from '@ant-design/icons'
 
 import logo from '@/assets/images/logo.png'
 import {
