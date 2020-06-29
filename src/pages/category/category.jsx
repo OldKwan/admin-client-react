@@ -8,7 +8,10 @@ import {
     Input,
     Select,
 } from 'antd'
-import { PlusOutlined } from '@ant-design/icons'
+import {
+    PlusOutlined,
+    RightSquareOutlined
+} from '@ant-design/icons'
 
 import {
     get_categoryList,
@@ -26,6 +29,7 @@ class category extends Component {
             dataSource: [],
             addVisible: false,
             editVisible: false,
+            secondCate: '',
         }
         this.columns = [
             {
@@ -35,10 +39,12 @@ class category extends Component {
             },
             {
                 title: '操作',
-                render: () => (
+                render: (category) => (
                     <span>
                         <LinkButton onClick={() => this.setState({ editVisible: true })}>修改分类</LinkButton>
-                        <LinkButton>查看子分类</LinkButton>
+                        {
+                            !this.state.secondCate && <LinkButton onClick={() => this.handleSecondCate(category)}>查看子分类</LinkButton>
+                        }
                     </span>
                 ),
                 width: 200,
@@ -80,13 +86,41 @@ class category extends Component {
         console.log('EditCategory');
     }
 
+    handleSecondCate = (category) => {
+        this.loadCategoryList(category._id)
+        this.setState({
+            secondCate: category.name,
+        })
+    }
+
+    loadFirstCate = () => {
+        this.loadCategoryList()
+        this.setState({
+            secondCate: '',
+        })
+    }
+
     render() {
         const {
             dataSource,
             addVisible,
             editVisible,
+            secondCate,
         } = this.state
-        const title = "一级分类列表"
+        // const title = "一级分类列表"
+        const title = (
+            <>
+                <LinkButton onClick={this.loadFirstCate}>一级分类列表</LinkButton>
+                {
+                    secondCate && (
+                        <>
+                            <RightSquareOutlined style={{ margin: '0 10px' }}/>
+                            {secondCate}
+                        </>
+                    )
+                }
+            </>
+        )
 
         return (
             <Card title={title} extra={this.extra}>
