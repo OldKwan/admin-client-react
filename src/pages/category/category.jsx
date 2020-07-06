@@ -15,6 +15,8 @@ import {
 
 import {
     get_categoryList,
+    post_editCategory,
+    post_addCategory,
 } from '@/api'
 import LinkButton from '@/components/LinkButton'
 
@@ -30,6 +32,12 @@ class category extends Component {
             addVisible: false,
             editVisible: false,
             secondCate: '',
+            secondId: '',
+            currentEdit: '',
+            currentEditId: 0, 
+            currentAddParentId: 0,
+            currentAdd: '',
+            levelOne: [],
         }
         this.columns = [
             {
@@ -41,7 +49,7 @@ class category extends Component {
                 title: '操作',
                 render: (category) => (
                     <span>
-                        <LinkButton onClick={() => this.setState({ editVisible: true })}>修改分类</LinkButton>
+                        <LinkButton onClick={() => this.handleEditShow(category)}>修改分类</LinkButton>
                         {
                             !this.state.secondCate && <LinkButton onClick={() => this.handleSecondCate(category)}>查看子分类</LinkButton>
                         }
@@ -57,6 +65,8 @@ class category extends Component {
             </Button>
         )
         this.loading = false
+        this.addInputRef = null
+        this.editInputRef = null
     }
 
     componentDidMount() {
@@ -70,6 +80,11 @@ class category extends Component {
         })
         this.loading = false
         if (data.status === 0 && data.data) {
+            if (parentId == 0) {
+                this.setState({
+                    levelOne: data.data,
+                })
+            }
             this.setState({
                 dataSource: data.data,
             })
@@ -78,18 +93,60 @@ class category extends Component {
         }
     }
 
-    handleAddCategory = () => {
-        console.log('AddCategory');
+    handleEditShow = cate => {
+        this.setState({
+            editVisible: true,
+            currentEdit: cate.name,
+            currentEditId: cate._id,
+        })
     }
 
-    handleEditCategory = () => {
-        console.log('EditCategory');
+    handleAddCategory = async () => {
+        const {
+            currentAddParentId,
+            currentAdd,
+            secondId,
+        } = this.state
+        const {data} = await post_addCategory({
+            parentId: currentAddParentId,
+            categoryName: currentAdd,
+        })
+        if (data.status === 0) {
+            message.success('添加成功!')
+            this.setState({
+                addVisible: false,
+            }, () => {
+                this.loadCategoryList(secondId || 0)
+            })
+        }
+    }
+
+    handleEditCategory = async () => {
+        const {
+            currentEditId,
+            currentEdit,
+            secondId,
+        } = this.state
+        const {data} = await post_editCategory({
+            categoryId: currentEditId,
+            categoryName: currentEdit,
+        })
+        if (data.status === 0) {
+            message.success('编辑成功!')
+            this.setState({
+                editVisible: false,
+            }, () => {
+                this.loadCategoryList(secondId || 0)
+            })
+        }
     }
 
     handleSecondCate = (category) => {
         this.loadCategoryList(category._id)
         this.setState({
             secondCate: category.name,
+            secondId: category._id,
+            currentAddParentId: category._id,
         })
     }
 
@@ -97,6 +154,26 @@ class category extends Component {
         this.loadCategoryList()
         this.setState({
             secondCate: '',
+            secondId: '',
+            currentAddParentId: '',
+        })
+    }
+
+    onInputChange = (name, val) => {
+        this.setState({
+            [name]: val.target.value,
+        })
+    }
+
+    addChange = val => {
+        this.setState({
+            currentAddParentId: val,
+        })
+    }
+
+    afterClose = name => {
+        this.setState({
+            [name]: '',
         })
     }
 
@@ -106,8 +183,11 @@ class category extends Component {
             addVisible,
             editVisible,
             secondCate,
+            currentEdit,
+            currentAdd,
+            levelOne,
+            secondId,
         } = this.state
-        // const title = "一级分类列表"
         const title = (
             <>
                 <LinkButton onClick={this.loadFirstCate}>一级分类列表</LinkButton>
@@ -136,27 +216,29 @@ class category extends Component {
                     title="添加分类"
                     visible={addVisible}
                     onOk={this.handleAddCategory}
-                    onCancel={() => this.setState({ addVisible: false })}
+                    onCancel={() => this.setState({ addVisible: false, currentAdd: '' })}
+                    afterClose={() => this.afterClose('currentAdd')}
                 >
                     <div style={{marginBottom: '16px'}}>所属分类: </div>
-                    <Select defaultValue="lucy" style={{ width: '100%', marginBottom: '40px' }}>
-                        <Option value="jack">Jack</Option>
-                        <Option value="lucy">Lucy</Option>
-                        <Option value="disabled" disabled>
-                            Disabled
-                        </Option>
-                        <Option value="Yiminghe">yiminghe</Option>
+                    <Select value={secondId || '0'} style={{ width: '100%', marginBottom: '40px' }} onChange={val => this.addChange(val)}>
+                        <Option value="0">一级分类</Option>
+                        {
+                            (levelOne && levelOne.length !== 0) && levelOne.map(item => (
+                                <Option value={item._id} key={item._id}>{item.name}</Option>
+                            ))
+                        }
                     </Select>
                     <div style={{marginBottom: '16px'}}>分类名称: </div>
-                    <Input placeholder="请输入分类名称" style={{ marginBottom: '40px' }} />
+                    <Input placeholder="请输入分类名称" value={currentAdd} style={{ marginBottom: '40px' }} onChange={val => this.onInputChange( 'currentAdd', val)} />
                 </Modal>
                 <Modal
                     title="修改分类"
                     visible={editVisible}
                     onOk={this.handleEditCategory}
-                    onCancel={() => this.setState({ editVisible: false })}
+                    onCancel={() => this.setState({ editVisible: false, currentEdit: '' })}
+                    afterClose={() => this.afterClose('currentEdit')}
                 >
-                    <Input placeholder="请输入名称" style={{ marginBottom: '40px' }} />
+                    <Input placeholder="请输入名称" value={currentEdit} style={{ marginBottom: '40px' }} onChange={val => this.onInputChange('currentEdit', val)} />
                 </Modal>
             </Card>
         );

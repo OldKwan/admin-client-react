@@ -35,3 +35,14 @@ export const post_addCategory = (data) => (
 export const post_editCategory = (data) => (
     request.post('/manage/category/update', data)
 )
+
+// product
+export const get_cateById = (data) => (
+    request.get('/manage/category/info', data)
+)
+export const post_ProductList = (data) => (
+    request.get(`/manage/product/list?pageNum=${data.pageNum}&pageSize=${data.pageSize}`)
+)
+export const post_searchProduct = (data) => (
+    request.post('/manage/product/search', data)
+)
