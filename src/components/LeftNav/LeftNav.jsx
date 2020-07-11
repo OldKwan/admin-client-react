@@ -100,7 +100,7 @@ class LeftNav extends Component {
                     </Menu.Item>
                 )
             } else {
-                const cItem = item.children.some(node => node.key === this.key)
+                const cItem = item.children.some(node => this.key.indexOf(node.key) === 0)
                 if (cItem) {
                     this.openKey = item.key
                 }
@@ -117,6 +117,9 @@ class LeftNav extends Component {
     
     render() {
         this.key = window.location.pathname
+        if (this.key.indexOf('/product') === 0) {
+            this.key = '/product'
+        }
         return (
             <div className="left-nav">
                 <Link to="/" className="left-nav-header">

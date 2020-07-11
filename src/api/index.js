@@ -1,6 +1,7 @@
 import jsonp from 'jsonp'
 import {message} from 'antd'
 import request from './setUp'
+import qs from 'qs'
 
 // 登录
 export const post_login = (data) => (
@@ -38,11 +39,14 @@ export const post_editCategory = (data) => (
 
 // product
 export const get_cateById = (data) => (
-    request.get('/manage/category/info', data)
+    request.get('/manage/category/info', {params: {...data}})
 )
 export const post_ProductList = (data) => (
     request.get(`/manage/product/list?pageNum=${data.pageNum}&pageSize=${data.pageSize}`)
 )
-export const post_searchProduct = (data) => (
-    request.post('/manage/product/search', data)
+export const get_searchProduct = (data) => (
+    request.get('/manage/product/search', {params: {...data}})
+)
+export const post_updateProductStatus = (data) => (
+    request.post('/manage/product/updateStatus', data)
 )
