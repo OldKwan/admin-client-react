@@ -73,7 +73,7 @@ class Home extends Component {
                 render: (product) => (
                     <span>
                         <LinkButton onClick={() => this.props.history.push('/product/detail', {product})}>detail</LinkButton>/
-                        <LinkButton>edit</LinkButton>
+                        <LinkButton onClick={() => this.props.history.push('/product/add-update', {product, isUpdate: true})}>edit</LinkButton>
                     </span>
                 ),
                 width: 150,

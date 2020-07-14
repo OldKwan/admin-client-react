@@ -50,3 +50,7 @@ export const get_searchProduct = (data) => (
 export const post_updateProductStatus = (data) => (
     request.post('/manage/product/updateStatus', data)
 )
+export const post_removedPic = (data) => (
+    request.post('/manage/img/delete', data)
+)
+

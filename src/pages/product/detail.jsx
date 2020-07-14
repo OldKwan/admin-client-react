@@ -12,6 +12,7 @@ import CONFIG from '@/config'
 import {
     get_cateById,
 } from '@/api'
+import PicturesWall from './pictures-wall'
 
 
 const Item = List.Item
@@ -104,18 +105,7 @@ class Detail extends Component {
                     </Item>
                     <Item>
                         <span className="left">Product Pictures:</span>
-                        <span>
-                            {
-                                (imgs && imgs.length !== 0) && imgs.map(img => (
-                                    <img
-                                        key={img}
-                                        className="product-img"
-                                        src={CONFIG.BASE_IMG_URL + img}
-                                        alt="img"
-                                    />
-                                ))
-                            }
-                        </span>
+                        <PicturesWall />
                     </Item>
                     <Item>
                         <span className="left">Product Detail:</span>
