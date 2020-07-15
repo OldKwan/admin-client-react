@@ -70,6 +70,7 @@ class AddUpdate extends Component {
         }
         this.product = {}
         this.picWallRef = null
+        this.richTextRef = null
     }
 
     componentWillMount() {
@@ -124,9 +125,8 @@ class AddUpdate extends Component {
     
 
     onFinish = vals => {
-        if (this.picWallRef) {
-            console.log(this.picWallRef.getPics());
-        }
+        this.picWallRef && (vals.imgs = this.picWallRef.getPics() || [])
+        this.richTextRef && (vals.detail = this.richTextRef.getDetail() || '')
         console.log(vals);
     }
 
@@ -219,11 +219,11 @@ class AddUpdate extends Component {
                             changeOnSelect
                         />
                     </Item>
-                    <Item label="Product Pictures" name="pic" wrapperCol={{ span: 16 }}>
+                    <Item label="Product Pictures" name="imgs" wrapperCol={{ span: 16 }}>
                         <PicturesWall ref={ref => this.picWallRef = ref} imgs={this.product.imgs || []} />
                     </Item>
                     <Item label="Product Detail" name="detail" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
-                        <RichText />
+                        <RichText detail={this.product.detail || ''} ref={ref => this.richTextRef = ref}/>
                     </Item>
                     <Button type="primary" htmlType="submit">
                         submit

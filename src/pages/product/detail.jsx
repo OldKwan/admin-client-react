@@ -105,7 +105,7 @@ class Detail extends Component {
                     </Item>
                     <Item>
                         <span className="left">Product Pictures:</span>
-                        <PicturesWall />
+                        <PicturesWall imgs={imgs || []} />
                     </Item>
                     <Item>
                         <span className="left">Product Detail:</span>

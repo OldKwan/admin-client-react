@@ -54,3 +54,13 @@ export const post_removedPic = (data) => (
     request.post('/manage/img/delete', data)
 )
 
+// role module
+export const post_addRole = (data) => (
+    request.post('/manage/role/add', data)
+)
+export const get_getRole = () => (
+    request.get('/manage/role/list')
+)
+export const post_updateRole = (data) => (
+    request.post('/manage/role/update', data)
+)
