@@ -36,7 +36,7 @@ class admin extends Component {
                 </Sider>
                 <Layout>
                     <Header {...this.props}/>
-                    <Content style={{margin: '20px', backgroundColor: 'white'}}>
+                    <Content style={{margin: '20px', backgroundColor: 'white', overflow: 'scroll'}}>
                         <Switch>
                             <Route path="/home" component={Home} />
                             <Route path="/category" component={Category} />

@@ -12,6 +12,7 @@ import {
 } from '@ant-design/icons'
 import {
     get_categoryList,
+    post_addPorduct,
 } from '@/api'
 import LinkButton from '@/components/LinkButton'
 import PicturesWall from './pictures-wall'
@@ -124,10 +125,26 @@ class AddUpdate extends Component {
 
     
 
-    onFinish = vals => {
+    onFinish = async (vals) => {
         this.picWallRef && (vals.imgs = this.picWallRef.getPics() || [])
         this.richTextRef && (vals.detail = this.richTextRef.getDetail() || '')
-        console.log(vals);
+        const params = {
+            name: vals.pName,
+            desc: vals.desc,
+            price: vals.price,
+            detail: vals.detail,
+            imgs: vals.imgs,
+            categoryId: vals.category[vals.category.length - 1],
+            pCategoryId: vals.category.length > 1 ? vals.category[0] : '0',
+        }
+        const { data } = await post_addPorduct(params)
+        if (data.status === 0 && data.data) {
+            message.success('添加商品成功!')
+            this.formRef && this.formRef.resetFields()
+            this.props.history.goBack()
+        } else {
+            message.error('添加商品失败!')
+        }
     }
 
     onFinishFailed = err => {
@@ -201,6 +218,7 @@ class AddUpdate extends Component {
                         price: this.product.price || '',
                         category: categoryList,
                     }}
+                    ref={ref => this.formRef = ref}
                 >
                     <Item label="Product Name" name="pName" rules={rules.pName}>
                         <Input placeholder="enter product name" />

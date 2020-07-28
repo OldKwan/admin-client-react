@@ -53,6 +53,9 @@ export const post_updateProductStatus = (data) => (
 export const post_removedPic = (data) => (
     request.post('/manage/img/delete', data)
 )
+export const post_addPorduct = (data) => (
+    request.post('/manage/product/add', data)
+)
 
 // role module
 export const post_addRole = (data) => (
