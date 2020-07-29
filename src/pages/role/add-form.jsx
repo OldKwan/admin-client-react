@@ -35,12 +35,14 @@ class AddForm extends Component {
     if (!roleName) return
     const {
       onClose,
+      onAddSuccess,
     } = this.props
     const { data } = await post_addRole({roleName})
     if (data.status === CONFIG.SUCCESS_CODE && data.data) {
       message.success('新增角色成功!')
       this.formRef && this.formRef.resetFields()
-      onClose()
+      onAddSuccess && onAddSuccess(data.data)
+      onClose && onClose()
     } else {
         message.error('加載角色列表失敗!')
     }

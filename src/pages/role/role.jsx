@@ -14,6 +14,7 @@ import {
     formateDate,
 } from '@/utils/utils'
 import AddRole from './add-form'
+import AuthRole from './auth-form'
 
 import './role.less'
 
@@ -25,6 +26,7 @@ class rule extends Component {
             role: {},
             total: 0,
             addVisible: false,
+            setVisible: false,
         }
     }
 
@@ -78,17 +80,24 @@ class rule extends Component {
         }
     }
 
+    onAddSuccess = (role) => {
+        this.setState(state => ({
+            roles: [...state.roles, role],
+        }))
+    }
+
     render() {
         const {
             roles,
             total,
             role,
             addVisible,
+            setVisible,
         } = this.state
         const title = (
             <span>
                 <Button type="primary" onClick={() => this.setState({ addVisible: true })}>create role</Button> &nbsp;&nbsp;
-                <Button type="primary" disabled={!role._id}>reset role</Button>
+                <Button type="primary" disabled={!role._id} onClick={() => this.setState({ setVisible: true })}>reset role</Button>
             </span>
         )
         return (
@@ -110,9 +119,35 @@ class rule extends Component {
                     onOk={() => {
                         this.formRef.submit()
                     }}
-                    onCancel={() => this.setState({ addVisible: false })}
+                    onCancel={() => {
+                        this.setState({
+                            addVisible: false,
+                        }, () => {
+                            this.formRef && this.formRef.resetFields()
+                        })
+                    }}
                 >
-                    <AddRole setRef={formRef => this.formRef = formRef} onClose={() => this.setState({ addVisible: false })} />
+                    <AddRole
+                        setRef={formRef => this.formRef = formRef}
+                        onClose={() => this.setState({ addVisible: false })}
+                        onAddSuccess={this.onAddSuccess}
+                    />
+                </Modal>
+                <Modal
+                    title="設置角色權限"
+                    visible={setVisible}
+                    onOk={() => {
+                        // this.formRef.submit()
+                    }}
+                    onCancel={() => {
+                        this.setState({
+                            setVisible: false,
+                        })
+                    }}
+                >
+                    <AuthRole
+                        role={role}
+                    />
                 </Modal>
             </Card>
         );
