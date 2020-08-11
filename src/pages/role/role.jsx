@@ -8,6 +8,7 @@ import {
 } from 'antd'
 import {
     get_getRole,
+    post_updateRole,
 } from '@/api'
 import CONFIG from '@/config'
 import {
@@ -15,6 +16,8 @@ import {
 } from '@/utils/utils'
 import AddRole from './add-form'
 import AuthRole from './auth-form'
+import storage from '@/storage'
+
 
 import './role.less'
 
@@ -27,6 +30,7 @@ class rule extends Component {
             total: 0,
             addVisible: false,
             setVisible: false,
+            menus: [],
         }
     }
 
@@ -75,6 +79,7 @@ class rule extends Component {
             onClick: e => {
                 this.setState({
                     role,
+                    menus: role.menus,
                 })
             }
         }
@@ -86,6 +91,42 @@ class rule extends Component {
         }))
     }
 
+    handleAuthClick = (m) => {
+        const { menus } = this.state
+        this.setState({
+            menus: m,
+        })
+    }
+
+    loadUpdateRoles = async () => {
+        const { role, roles, menus } = this.state
+        const user = storage.getUser()
+        const { data } = await post_updateRole({
+            _id: role._id,
+            menus,
+            auth_time: new Date().getTime(),
+            auth_name: user.username,
+        })
+        if (data.status === CONFIG.SUCCESS_CODE && data.data) {
+            roles.forEach(role => {
+                if (role._id === data.data._id) {
+                    role.menus = data.data.menus
+                }
+            })
+            this.setState({
+                roles: roles,
+                setVisible: false,
+            })
+            message.success('授权成功!')
+        } else {
+            message.error('授权失败!')
+        }
+    }
+
+    submitUpdate = () => {
+        this.loadUpdateRoles()
+    }
+
     render() {
         const {
             roles,
@@ -93,6 +134,7 @@ class rule extends Component {
             role,
             addVisible,
             setVisible,
+            menus,
         } = this.state
         const title = (
             <span>
@@ -136,17 +178,18 @@ class rule extends Component {
                 <Modal
                     title="設置角色權限"
                     visible={setVisible}
-                    onOk={() => {
-                        // this.formRef.submit()
-                    }}
+                    onOk={this.submitUpdate}
                     onCancel={() => {
                         this.setState({
                             setVisible: false,
+                            menus: role.menus,
                         })
                     }}
                 >
                     <AuthRole
                         role={role}
+                        menus={menus}
+                        onCheck={this.handleAuthClick}
                     />
                 </Modal>
             </Card>

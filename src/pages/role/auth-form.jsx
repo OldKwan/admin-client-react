@@ -5,9 +5,6 @@ import {
   message,
   Tree,
 } from 'antd'
-import {
-  post_addRole,
-} from '@/api'
 import CONFIG from '@/config'
 import {
     menuList,
@@ -26,7 +23,7 @@ const FormItemLayout = {
  */
 function getTreeStruct(treeNodes) {
     return treeNodes.reduce((pre, item) => {
-        if (!item.children) {
+        if (!item.treeData) {
             pre.push((
                 <TreeNode title={item.title} key={item.key} />
             ))
@@ -34,7 +31,7 @@ function getTreeStruct(treeNodes) {
             pre.push((
                 <TreeNode key={item.key} title={item.title} >
                     {
-                        getTreeStruct(item.children)
+                        getTreeStruct(item.treeData)
                     }
                 </TreeNode>
             ))
@@ -54,10 +51,13 @@ class AuthForm extends Component {
   componentWillMount() {
       this.treeStruct = getTreeStruct(menuList)
   }
+
   
   render() {
     const {
         role,
+        onCheck,
+        menus,
     } = this.props
     return (
         <Form
@@ -71,7 +71,8 @@ class AuthForm extends Component {
             <Tree
                 checkable
                 defaultExpandAll
-                checkedKeys={role.menus}
+                checkedKeys={menus}
+                onCheck={onCheck}
             >
                 <TreeNode key="all" title="平臺權限">
                     {

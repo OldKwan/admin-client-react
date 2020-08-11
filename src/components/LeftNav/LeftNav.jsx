@@ -18,7 +18,7 @@ let openKey
  */
 // function getMenuNodes(treeNodes) {
 //     return treeNodes.map(item => {
-//         if (!item.children) {
+//         if (!item.treeData) {
 //             return (
 //                 <Menu.Item key={item.key} icon={item.icon}>
 //                     <Link to={item.key}>
@@ -27,14 +27,14 @@ let openKey
 //                 </Menu.Item>
 //             )
 //         } else {
-//             const cItem = item.children.some(node => node.key === key)
+//             const cItem = item.treeData.some(node => node.key === key)
 //             if (cItem) {
 //                 openKey = item.key
 //             }
 //             return (
 //                 <SubMenu key={item.key} icon={item.icon} title={item.title} >
 //                     {
-//                         getMenuNodes(item.children)
+//                         getMenuNodes(item.treeData)
 //                     }
 //                 </SubMenu>
 //             )
@@ -48,7 +48,7 @@ let openKey
  */
 // function getMenuNodes2(treeNodes) {
 //     return treeNodes.reduce((pre, item) => {
-//         if (!item.children) {
+//         if (!item.treeData) {
 //             pre.push((
 //                 <Menu.Item key={item.key} icon={item.icon}>
 //                     <Link to={item.key}>
@@ -57,14 +57,14 @@ let openKey
 //                 </Menu.Item>
 //             ))
 //         } else {
-//             const cItem = item.children.some(node => node.key === key)
+//             const cItem = item.treeData.some(node => node.key === key)
 //             if (cItem) {
 //                 openKey = item.key
 //             }
 //             pre.push((
 //                 <SubMenu key={item.key} icon={item.icon} title={item.title} >
 //                     {
-//                         getMenuNodes2(item.children)
+//                         getMenuNodes2(item.treeData)
 //                     }
 //                 </SubMenu>
 //             ))
@@ -91,7 +91,7 @@ class LeftNav extends Component {
     getMenuNodes = (treeNodes) => {
         this.key = window.location.pathname
         return treeNodes.map(item => {
-            if (!item.children) {
+            if (!item.treeData) {
                 return (
                     <Menu.Item key={item.key} icon={item.icon}>
                         <Link to={item.key}>
@@ -100,14 +100,14 @@ class LeftNav extends Component {
                     </Menu.Item>
                 )
             } else {
-                const cItem = item.children.some(node => this.key.indexOf(node.key) === 0)
+                const cItem = item.treeData.some(node => this.key.indexOf(node.key) === 0)
                 if (cItem) {
                     this.openKey = item.key
                 }
                 return (
                     <SubMenu key={item.key} icon={item.icon} title={item.title} >
                         {
-                            this.getMenuNodes(item.children)
+                            this.getMenuNodes(item.treeData)
                         }
                     </SubMenu>
                 )

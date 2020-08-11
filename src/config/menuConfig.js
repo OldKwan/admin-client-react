@@ -22,7 +22,7 @@ export const menuList = [
         title: '商品',
         key: '/products',
         icon: (<AppstoreOutlined />),
-        children: [ // 子菜单列表 
+        treeData: [ // 子菜单列表 
             {
                 title: '品类管理', key: '/category', icon: (<ApartmentOutlined />),
             }, {
@@ -40,7 +40,7 @@ export const menuList = [
         title: '图形图表',
         key: '/charts',
         icon: (<AreaChartOutlined />),
-        children: [
+        treeData: [
             {
                 title: '柱形图', key: '/charts/bar', icon: (<BarChartOutlined />),
             },
